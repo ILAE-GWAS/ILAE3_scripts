@@ -1,0 +1,109 @@
+
+
+# eQTL downloaded from metabrain.nl
+
+#reformatted ILAE2 sumstats to create log-odds ratio according to manual of BOLT-LMM with formula log OR = β / (μ * (1 - μ)), where μ = case fraction
+# used 3708/(3708+24218)= 0.1328 as case fraction for GGE and 14534/(14534+24218)=0.3750 as case fraction for all epilepsy for Caucasian only analyses. Focal epilepsy case fraction: 9095/(9095+24218)=0.27
+
+cd /mnt/ilae/work/meta_with_epi25/rsids/summary_stats/ILAE2
+
+awk '{print $0, ($11/(0.1328*(1-0.1328))), ($12/(0.1328*(1-0.1328)))}' final_generalised_epilepsy_withX_new_phenos_het_LD_CR0.05_filtered > STDERR/final_generalised_epilepsy_caucasian_STDERR
+awk '{print $0, ($11/(0.3750*(1-0.3750))), ($12/(0.3750*(1-0.3750)))}' final_all_epilepsy_withX_new_phenos_het_LD_CR0.05_filtered > STDERR/final_all_epilepsy_caucasian_STDERR
+awk '{print $0, ($11/(0.3750*(1-0.3750))), ($12/(0.3750*(1-0.3750)))}' final_focal_epilepsy_withX_new_phenos_het_LD_CR0.05_filtered > STDERR/final_focal_caucasian_STDERR
+
+#Swiss: case fraction 0.47
+awk '{print $0, ($8/(0.47*(1-0.47))), ($9/(0.47*(1-0.47)))}' SWISS_BOLT_Epilepsy_N > STDERR/SWISS_BOLT_Epilepsy_STDERR
+
+#Janssen case fraction 0.12
+awk '{print $0, ($11/(0.12*(1-0.12))), ($12/(0.12*(1-0.12)))}' janssen_noX > STDERR/janssen_STDERR
+
+#Austrian case fraction: 0.32
+awk '{print $0, ($11/(0.32*(1-0.32))), ($12/(0.32*(1-0.32)))}' Austrian_BOLT > STDERR/Austrian_STDERR
+
+
+#Norwegians are already in correct format
+
+#changed header for these columns to 'logOR' and 'logORSE'
+
+# ILAE GWAS meta analysis rerun with STDERR to create beta and SE which are required for SMR. 
+
+#reformatted sumstats to SMR format:
+cd /mnt/ilae/work/meta_with_epi25/rsids/results/SMR
+awk '{print $3, $4, $5, $6, $8, $9, $10, "NA"}' ILAE3.7_Caucasian_all_epilepsy_STDERR1.tbl > sumstats/ILAE3.7_Caucasian_all_epilepsy_STDERR_SMR
+awk '{print $3, $4, $5, $6, $8, $9, $10, "NA"}' ILAE3.7_Caucasian_generalised_STDERR1.tbl > sumstats/ILAE3.7_Caucasian_generalised_STDERR_SMR
+
+#manually changed header to SMR format (SNP A1 A2 freq b se p n
+
+#reformat eQTL dataset .esi file to rsids only and put in rsids folder; done the same for 
+for i in {1..22}; do sed "s/\:/\\t/g" 2020-05-26-Cortex-EUR-${i}-SMR-besd.esi | awk '{print $1, $4, $6, $7, $8, $9, $10}' > rsids/2020-05-26-Cortex-EUR-${i}-SMR-besd.esi; done
+
+#run SMR
+for i in {1..22}; do ./smr_Linux --bfile /mnt/ilae/data/reference_datasets/1000G_PLINK/all_phase3_rsids --gwas-summary sumstats/ILAE3.7_Caucasian_all_epilepsy_STDERR_SMR --beqtl-summary reference_panels/rsids/2020-05-26-Cortex-EUR-${i}-SMR-besd --out results/ILAE3.7_all_epilepsy_metabrain_chr${i}; done
+for i in {1..22}; do ./smr_Linux --bfile /mnt/ilae/data/reference_datasets/1000G_PLINK/all_phase3_rsids --gwas-summary sumstats/ILAE3.7_Caucasian_generalised_STDERR_SMR --beqtl-summary reference_panels/rsids/2020-05-26-Cortex-EUR-${i}-SMR-besd --out results/ILAE3.7_generalised_metabrain_chr${i}; done
+
+
+# Formatting results and creating plots
+# Transfer files to HPC vanaf huis
+# script in /hpc/dlab_koeleman/users/rstevelink/ILAE_PEC/Format_results.R; based on https://opain.github.io/MDD-TWAS/MDD_TWAS.html
+
+cd /hpc/dlab_koeleman/users/rstevelink/ILAE_PEC/
+
+
+#reformat sumstats to remove geneid format
+for i in {1..22}; do sed 's/\./\t/g' ILAE37_generalised_metabrain_chr${i} | awk '{print $1}' | paste - <(cut -f 2-21 ILAE37_generalised_metabrain_chr${i}) > ILAE37_generalised_metabrain_reformatted_chr${i}; done
+
+#changed Format_results.R script to match new gene id column ('probeID')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#######
+#subphenotype results
+######
+
+#reformatted ILAE2 sumstats to create log-odds ratio according to manual of BOLT-LMM with formula log OR = β / (μ * (1 - μ)), where μ = case fraction
+#used 1177/(1177+24218)= 0.0463 as case fraction for JME and 778/(778+24218)=0.0311 as case fraction for all epilepsy for Caucasian only analyses. 
+
+cd /mnt/ilae/work/meta_with_epi25/rsids/summary_stats/ILAE2/subphenotypes
+
+awk '{print $0, ($9/(0.0463*(1-0.0463))), ($10/(0.0463*(1-0.0463)))}' JME_BOLT-LMM_final_with_N > ../STDERR/JME_STDERR
+awk '{print $0, ($9/(0.0311*(1-0.0311))), ($10/(0.0311*(1-0.0311)))}' CAE_BOLT-LMM_final_with_N > ../STDERR/CAE_STDERR
+
+#changed header for these columns to 'logOR' and 'logORSE'
+
+
+# ILAE GWAS meta analysis rerun with STDERR to create beta and SE which are required for SMR. 
+cd /mnt/ilae/work/meta_with_epi25/rsids/results/SMR
+
+#reformatted sumstats to SMR format:
+cd /mnt/ilae/work/meta_with_epi25/rsids/results/SMR
+awk '{print $3, $4, $5, $6, $8, $9, $10, "NA"}' ILAE3.2_JME_STDERR1.tbl  > sumstats/ILAE3.2_JME_STDERR_SMR
+awk '{print $3, $4, $5, $6, $8, $9, $10, "NA"}' ILAE3.2_CAE_STDERR1.tbl  > sumstats/ILAE3.2_CAE_STDERR_SMR
+
+#run SMR
+for i in {1..22}; do ./smr_Linux --bfile /mnt/ilae/data/reference_datasets/1000G_PLINK/all_phase3_rsids --gwas-summary sumstats/ILAE3.2_JME_STDERR_SMR --beqtl-summary reference_panels/rsids/2020-05-26-Cortex-EUR-${i}-SMR-besd --out results/ILAE3.2_JME_metabrain_chr${i}; done &
+for i in {1..22}; do ./smr_Linux --bfile /mnt/ilae/data/reference_datasets/1000G_PLINK/all_phase3_rsids --gwas-summary sumstats/ILAE3.2_CAE_STDERR_SMR --beqtl-summary reference_panels/rsids/2020-05-26-Cortex-EUR-${i}-SMR-besd --out results/ILAE3.2_CAE_metabrain_chr${i}; done
+
+
+# Formatting results and creating plots
+# Transfer files to HPC vanaf huis
+# script in /hpc/dlab_koeleman/users/rstevelink/ILAE_PEC/Format_results.R; based on https://opain.github.io/MDD-TWAS/MDD_TWAS.html
+
+cd /hpc/dlab_koeleman/users/rstevelink/ILAE_PEC/SMR
+
+#reformat sumstats to remove geneid format
+for i in {1..22}; do sed 's/\./\t/g' ILAE3.2_CAE_metabrain_chr${i}.smr | awk '{print $1}' | paste - <(cut -f 2-21 ILAE3.2_CAE_metabrain_chr${i}.smr) > ILAE3.2_CAE_metabrain_reformatted_chr${i}; done
+for i in {1..22}; do sed 's/\./\t/g' ILAE3.2_JME_metabrain_chr${i}.smr | awk '{print $1}' | paste - <(cut -f 2-21 ILAE3.2_JME_metabrain_chr${i}.smr) > ILAE3.2_JME_metabrain_reformatted_chr${i}; done
+
+#ran Format_results.R script
+

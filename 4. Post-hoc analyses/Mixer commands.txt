@@ -1,0 +1,68 @@
+#Tutorial https://github.com/precimed/mixer
+
+cd /mnt/scratch/mixer
+
+#Data preparation according to script on github, made my own version as 'format_sumstats.sh'
+
+#Downloaded 1000G.EUR.QC.prune_maf0p05_rand2M_r2p8.rep$.snps etc from https://github.com/comorment/containers/tree/main/reference/ldsc/1000G_EUR_Phase3_plink
+#used my own PC to download, since I couldn't install git lfs on server.
+
+ulimit -s 64000
+
+## univarate analyses
+
+#generalised ILAE3.6
+for i in {1..20}; do
+mixer fit1 --trait1-file sumstats/ILAE3.6_Caucasian_generalised_qc_noMHC.csv --out results/fit1/ILAE3.6_Caucasian_generalised_$i --extract LD_ref/1000G.EUR.QC.prune_maf0p05_rand2M_r2p8.rep$i.snps --bim-file LD_ref/1000G.EUR.QC.@.bim --ld-file LD_ref/1000G.EUR.QC.@.run4.ld --lib ~/mixer/src/build/lib/libbgmg.so;
+done
+
+#All epilepsy ILAE3.6
+for i in {1..20}; do
+mixer fit1 --trait1-file sumstats/ILAE3.6_Caucasian_all_epilepsy_rsids1.tbl_qc_noMHC.csv.gz --out results/fit1/ILAE3.6_Caucasian_all_epilepsy_rep$i --extract LD_ref/1000G.EUR.QC.prune_maf0p05_rand2M_r2p8.rep$i.snps --bim-file LD_ref/1000G.EUR.QC.@.bim --ld-file LD_ref/1000G.EUR.QC.@.run4.ld --lib ~/mixer/src/build/lib/libbgmg.so;
+done
+
+
+
+#generalised ILAE3.4
+for i in {1..20}; do
+mixer fit1 --trait1-file sumstats/ILAE3.4_Caucasian_generalised_qc_noMHC.csv --out results/ILAE3.4_Caucasian_generalised_$i --extract LD_ref/1000G.EUR.QC.prune_maf0p05_rand2M_r2p8.rep$i.snps --bim-file LD_ref/1000G.EUR.QC.@.bim --ld-file LD_ref/1000G.EUR.QC.@.run4.ld --lib ~/mixer/src/build/lib/libbgmg.so;
+done
+
+#focal epilepsy
+for i in {1..20}; do
+mixer fit1 --trait1-file sumstats/ILAE3.5_Caucasian_focal_rsids1.tbl_qc_noMHC.csv.gz --out results/ILAE3.4_Caucasian_focal_$i --extract LD_ref/1000G.EUR.QC.prune_maf0p05_rand2M_r2p8.rep$i.snps --bim-file LD_ref/1000G.EUR.QC.@.bim --ld-file LD_ref/1000G.EUR.QC.@.run4.ld --lib ~/mixer/src/build/lib/libbgmg.so;
+done
+
+#ASD
+for i in {1..20}; do
+mixer fit1 --trait1-file sumstats/iPSYCH-PGC_ASD_Nov2017_qc_noMHC.csv.gz --out results/iPSYCH-PGC_ASD_Nov2017_$i --extract LD_ref/1000G.EUR.QC.prune_maf0p05_rand2M_r2p8.rep$i.snps --bim-file LD_ref/1000G.EUR.QC.@.bim --ld-file LD_ref/1000G.EUR.QC.@.run4.ld --lib ~/mixer/src/build/lib/libbgmg.so;
+done
+
+# Intelligence
+for i in {1..20}; do
+mixer fit1 --trait1-file sumstats/SavageJansen_2018_intelligence_metaanalysis.txt_qc_noMHC.csv.gz --out results/SavageJansen_2018_intelligence_$i --extract LD_ref/1000G.EUR.QC.prune_maf0p05_rand2M_r2p8.rep$i.snps --bim-file LD_ref/1000G.EUR.QC.@.bim --ld-file LD_ref/1000G.EUR.QC.@.run4.ld --lib ~/mixer/src/build/lib/libbgmg.so;
+done
+
+#focal epilepsy
+for i in {1..20}; do
+mixer fit1 --trait1-file sumstats/ILAE3.5_Caucasian_all_epilepsy_rsids1.tbl_qc_noMHC.csv.gz --out results/ILAE3.4_Caucasian_all_epilepsy_$i --extract LD_ref/1000G.EUR.QC.prune_maf0p05_rand2M_r2p8.rep$i.snps --bim-file LD_ref/1000G.EUR.QC.@.bim --ld-file LD_ref/1000G.EUR.QC.@.run4.ld --lib ~/mixer/src/build/lib/libbgmg.so;
+done
+
+
+
+#Create figures
+cd /mnt/scratch/mixer/results/fit2
+mixer_figures combine --json ILAE3.6_Caucasian_generalised_vs_iPSYCH_ASD_rep@.json --out ../combined/ILAE3.6_Caucasian_generalised_vs_iPSYCH_ASD_fit2
+mixer_figures combine --json ILAE3.6_Caucasian_generalised_vs_Wood_height_rep@.json --out ../combined/ILAE3.6_Caucasian_generalised_vs_Wood_height_fit2
+mixer_figures combine --json ILAE3.6_Caucasian_generalised_vs_Savage_intelligence_rep@.json --out ../combined/ILAE3.6_Caucasian_generalised_vs_Savage_intelligence_fit2
+
+mixer_figures combine --json ILAE3.6_Caucasian_generalised_vs_Savage_intelligence_test2_rep@.json --out ../combined/ILAE3.6_Caucasian_generalised_vs_Savage_intelligence_test2
+mixer_figures combine --json ILAE3.6_Caucasian_generalised_vs_iPSYCH_ASD_test2_rep@.json --out ../combined/ILAE3.6_Caucasian_generalised_vs_iPSYCH_ASD_test2
+mixer_figures combine --json ILAE3.6_Caucasian_generalised_vs_Wood_height_test2_rep@.json --out ../combined/ILAE3.6_Caucasian_generalised_vs_Wood_height_test2
+
+
+cd ../combined/
+mixer_figures two --json-fit ILAE3.6_Caucasian_generalised_vs_iPSYCH_ASD_fit2.json --json-test ILAE3.6_Caucasian_generalised_vs_iPSYCH_ASD_test2.json --out ILAE3.6_Caucasian_generalised_vs_iPSYCH_ASD_final --statistic mean std
+mixer_figures two --json-fit ILAE3.6_Caucasian_generalised_vs_Savage_intelligence_fit2.json --json-test ILAE3.6_Caucasian_generalised_vs_Savage_intelligence_test2.json --out ILAE3.6_Caucasian_generalised_vs_Savage_intelligence_final --statistic mean std
+mixer_figures two --json-fit ILAE3.6_Caucasian_generalised_vs_Wood_height_fit2.json --json-test ILAE3.6_Caucasian_generalised_vs_Wood_height_test2.json --out ILAE3.6_Caucasian_generalised_vs_Wood_height_final --statistic mean std
+

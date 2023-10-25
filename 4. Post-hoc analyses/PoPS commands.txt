@@ -1,0 +1,42 @@
+# followed manual at https://github.com/FinucaneLab/pops
+# downloaded supporting files via dropbox link via above manual
+
+
+cd /mnt/ilae/work/meta_with_epi25/rsids/results/POPS
+
+magma --bfile 1000G.EUR --gene-annot magma_0kb.genes.annot --pval sumstats/ILAE3.7_Caucasian_all_epilepsy1.tbl ncol=N --gene-model snp-wise=mean --out results/ILAE3.7_Caucasian_all_epilepsy_MAGMA
+python ./pops.feature_selection.py --features PoPS.features.txt.gz --gene_results results/ILAE3.7_Caucasian_all_epilepsy_MAGMA --out results/ILAE3.7_Caucasian_all_epilepsy_PoPS
+
+for i in {1..22}; do
+python ./pops.predict_scores.py --gene_loc gene_loc.txt --gene_results results/ILAE3.7_Caucasian_all_epilepsy_MAGMA --features PoPS.features.txt.gz \
+--selected_features results/ILAE3.7_Caucasian_all_epilepsy_PoPS.features --control_features control.features \
+--chromosome ${i} --out results/PoP_scores/ILAE3.7_Caucasian_all_epilepsy_PoPS_chr; done
+
+for i in {1..22}; do
+python ./pops.predict_scores.py --gene_loc gene_loc.txt --gene_results results/ILAE3.7_Caucasian_generalised_MAGMA --features PoPS.features.txt.gz \
+--selected_features results/ILAE3.7_Caucasian_generalised_PoPS.features --control_features control.features \
+--chromosome ${i} --out results/PoP_scores/ILAE3.7_Caucasian_all_epilepsy_PoPS_chr; done
+
+
+
+
+
+#Subphenotypes
+
+magma --bfile 1000G.EUR --gene-annot magma_0kb.genes.annot --pval sumstats/ILAE3.2_JME1.tbl ncol=N --gene-model snp-wise=mean --out results/ILAE3.2_JME_MAGMA
+python ./pops.feature_selection.py --features PoPS.features.txt.gz --gene_results results/ILAE3.2_JME_MAGMA --out results/ILAE3.2_JME_PoPS
+
+for i in {1..22}; do
+python ./pops.predict_scores.py --gene_loc gene_loc.txt --gene_results results/ILAE3.2_JME_MAGMA --features PoPS.features.txt.gz \
+--selected_features results/ILAE3.2_JME_PoPS.features --control_features control.features \
+--chromosome ${i} --out results/PoP_scores/ILAE3.7_JME_PoPS_chr; done
+
+
+
+magma --bfile 1000G.EUR --gene-annot magma_0kb.genes.annot --pval sumstats/ILAE3.2_CAE1.tbl ncol=N --gene-model snp-wise=mean --out results/ILAE3.2_CAE_MAGMA
+python ./pops.feature_selection.py --features PoPS.features.txt.gz --gene_results results/ILAE3.2_CAE_MAGMA --out results/ILAE3.2_CAE_PoPS
+
+for i in {1..22}; do
+python ./pops.predict_scores.py --gene_loc gene_loc.txt --gene_results results/ILAE3.2_CAE_MAGMA --features PoPS.features.txt.gz \
+--selected_features results/ILAE3.2_CAE_PoPS.features --control_features control.features \
+--chromosome ${i} --out results/PoP_scores/ILAE3.7_CAE_PoPS_chr; done

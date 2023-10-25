@@ -1,0 +1,8 @@
+#All epilepsy
+/mnt/als-epilepsy/tools/BOLT-LMM_v2.3/bolt --bfile=all_datasets_bolt --modelSnps=all_datasets_bolt_pruned.prune.in --phenoFile=pheno_files/all_epilepsy.pheno --phenoCol=All --lmm --LDscoresFile=/mnt/als-epilepsy/tools/BOLT-LMM_v2.3/tables/LDSCORE.1000G_EUR.tab.gz --statsFile=results/all_epilepsy_stub_stats.tab --numThreads=5 --LDscoresMatchBp --verboseStats --geneticMapFile=/mnt/als-epilepsy/tools/BOLT-LMM_v2.3/tables/genetic_map_hg19_withX.txt.gz --covarFile=pheno_files/stub_sex.covar --covarCol=stub --covarMaxLevels=40
+
+#Generalised epilepsy
+/mnt/als-epilepsy/tools/BOLT-LMM_v2.3/bolt --bfile=all_datasets_bolt --modelSnps=all_datasets_bolt_pruned.prune.in --phenoFile=pheno_files/generalised_epilepsy.pheno --phenoCol=generalised --lmm --LDscoresFile=/mnt/als-epilepsy/tools/BOLT-LMM_v2.3/tables/LDSCORE.1000G_EUR.tab.gz --numThreads=5 --LDscoresMatchBp --verboseStats --geneticMapFile=/mnt/als-epilepsy/tools/BOLT-LMM_v2.3/tables/genetic_map_hg19_withX.txt.gz --covarFile=pheno_files/stub_sex.covar --covarCol=stub --covarMaxLevels=40 --statsFile=results/generalised_epilepsy_stub_stats.tab
+
+#Focal epilepsy
+/mnt/als-epilepsy/tools/BOLT-LMM_v2.3/bolt --bfile=all_datasets_bolt --modelSnps=all_datasets_bolt_pruned.prune.in --phenoFile=pheno_files/focal_epilepsy.pheno --phenoCol=focal --lmm --LDscoresFile=/mnt/als-epilepsy/tools/BOLT-LMM_v2.3/tables/LDSCORE.1000G_EUR.tab.gz --numThreads=5 --LDscoresMatchBp --verboseStats --geneticMapFile=/mnt/als-epilepsy/tools/BOLT-LMM_v2.3/tables/genetic_map_hg19_withX.txt.gz --covarFile=pheno_files/stub_sex.covar --covarCol=stub --covarMaxLevels=40 --statsFile=results/focal_epilepsy_stub_stats.tab

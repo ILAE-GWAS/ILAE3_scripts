@@ -1,0 +1,2 @@
+ldak --sum-cors results/correlations/ILAE3.2_focal_vs_generalised_LDAK --summary sumstats/ILAE3.7_Caucasian_focal_LDAK_sumstats_Effective_N --summary2 sumstats/ILAE3.7_Caucasian_generalised_LDAK_sumstats_Effective_N --tagfile taggings/bld.ldak.hapmap.gbr.tagging --check-sums NO
+

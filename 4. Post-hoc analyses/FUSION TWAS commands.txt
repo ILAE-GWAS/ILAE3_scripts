@@ -1,0 +1,174 @@
+#### ILAE 3.6
+
+#reformat sum stats to CHR:BP (for PEC)
+/mnt/ilae/work/meta_with_epi25/rsids/results/FUSION/summary_stats
+awk '{print $1":"$2, $4, $5, $8, $9, $10}' ../../ILAE3.6_Caucasian_all_epilepsy_rsids1.tbl > ./ILAE3.6_Caucasian_all_epilepsy_CHR_BP
+awk '{print $1":"$2, $4, $5, $8, $9, $10}' ../../ILAE3.6_Caucasian_focal_rsids1.tbl > ./ILAE3.6_Caucasian_focal_CHR_BP
+awk '{print $1":"$2, $4, $5, $8, $9, $10}' ../../ILAE3.6_Caucasian_generalised_rsids1.tbl > ./ILAE3.6_Caucasian_generalised_CHR_BP
+
+awk '{print $1":"$2, $4, $5, $8, $9, $10}' ../../subphenotypes/ILAE3.2_JME1.tbl > ./ILAE3.2_JME_CHR_BP
+awk '{print $1":"$2, $4, $5, $8, $9, $10}' ../../subphenotypes/ILAE3.2_CAE1.tbl > ./ILAE3.2_CAE_CHR_BP
+
+conda activate ldsc
+munge_sumstats --sumstats ILAE3.6_Caucasian_all_epilepsy_CHR_BP --out ILAE3.6_Caucasian_all_epilepsy_CHR_BP --snp Chromosome:Position 
+munge_sumstats --sumstats ILAE3.6_Caucasian_focal_CHR_BP --out ILAE3.6_Caucasian_focal_CHR_BP --snp Chromosome:Position 
+munge_sumstats --sumstats ILAE3.6_Caucasian_generalised_CHR_BP --out ILAE3.6_Caucasian_generalised_CHR_BP --snp Chromosome:Position
+
+munge_sumstats --sumstats ILAE3.2_JME_CHR_BP --out ILAE3.2_JME_CHR_BPP --snp Chromosome:Position
+munge_sumstats --sumstats ILAE3.2_CAE_CHR_BP --out ILAE3.2_CAE_CHR_BPP --snp Chromosome:Position
+
+
+#Run TWAS PEC
+cd /mnt/ilae/work/meta_with_epi25/rsids/results/FUSION
+
+for i in {1..23}
+do
+fusion --sumstats summary_stats/ILAE3.6_Caucasian_all_epilepsy_CHR_BP.sumstats --weights /mnt/ilae/archive/tools/twas/WEIGHTS/PEC_TWAS_weights.pos --weights_dir /mnt/ilae/archive/tools/twas/WEIGHTS/ --chr ${i} --out results/all_epilepsy/ILAE3.6_all_epilepsy_PEC_CHR${i} --ref_ld_chr /mnt/ilae/archive/tools/twas/LDREF/1000G_unfiltered_CHR_BP/1000G_unfiltered_CHR --max_impute=0.7
+done                 
+
+for i in {1..23}
+do
+fusion --sumstats summary_stats/ILAE3.6_Caucasian_focal_CHR_BP.sumstats --weights /mnt/ilae/archive/tools/twas/WEIGHTS/PEC_TWAS_weights.pos --weights_dir /mnt/ilae/archive/tools/twas/WEIGHTS/ --chr ${i} --out results/focal/ILAE3.6_focal_PEC_CHR${i} --ref_ld_chr /mnt/ilae/archive/tools/twas/LDREF/1000G_unfiltered_CHR_BP/1000G_unfiltered_CHR --max_impute=0.7
+done                        
+
+for i in {1..23}
+do
+fusion --sumstats summary_stats/ILAE3.6_Caucasian_generalised_CHR_BP.sumstats --weights /mnt/ilae/archive/tools/twas/WEIGHTS/PEC_TWAS_weights.pos --weights_dir /mnt/ilae/archive/tools/twas/WEIGHTS/ --chr ${i} --out results/generalised/ILAE3.6_generalised_PEC_CHR${i} --ref_ld_chr /mnt/ilae/archive/tools/twas/LDREF/1000G_unfiltered_CHR_BP/1000G_unfiltered_CHR --max_impute=0.7
+done                        
+
+
+
+#Run TWAS sCCA1
+for i in {1..22}
+do
+fusion --sumstats summary_stats/ILAE3.7_Caucasian_generalised.sumstats --weights /mnt/ilae/archive/tools/twas/WEIGHTS/sCCA1.pos --weights_dir /mnt/ilae/archive/tools/twas/WEIGHTS/ --chr ${i} --out results/generalised/sCCA/ILAE3.7_Caucasian_generalise_sCCA1_CHR${i} --ref_ld_chr /mnt/ilae/archive/tools/twas/LDREF/1000G.EUR. --max_impute=0.7
+done                 
+
+#Run TWAS sCCA2
+for i in {1..22}
+do
+fusion --sumstats summary_stats/ILAE3.7_Caucasian_generalised.sumstats --weights /mnt/ilae/archive/tools/twas/WEIGHTS/sCCA2.pos --weights_dir /mnt/ilae/archive/tools/twas/WEIGHTS/ --chr ${i} --out results/generalised/sCCA/ILAE3.7_Caucasian_generalise_sCCA2_CHR${i} --ref_ld_chr /mnt/ilae/archive/tools/twas/LDREF/1000G.EUR. --max_impute=0.7
+done                 
+
+#Run TWAS sCCA3
+for i in {1..22}
+do
+fusion --sumstats summary_stats/ILAE3.7_Caucasian_generalised.sumstats --weights /mnt/ilae/archive/tools/twas/WEIGHTS/sCCA3.pos --weights_dir /mnt/ilae/archive/tools/twas/WEIGHTS/ --chr ${i} --out results/generalised/sCCA/ILAE3.7_Caucasian_generalise_sCCA3_CHR${i} --ref_ld_chr /mnt/ilae/archive/tools/twas/LDREF/1000G.EUR. --max_impute=0.7
+done                 
+
+
+
+
+for i in {1..23}
+do
+fusion --sumstats summary_stats/ILAE3.2_JME_CHR_BPP.sumstats --weights /mnt/ilae/archive/tools/twas/WEIGHTS/PEC_TWAS_weights.pos --weights_dir /mnt/ilae/archive/tools/twas/WEIGHTS/ --chr ${i} --out results/JME/ILAE3.2_JME_PEC_CHR${i} --ref_ld_chr /mnt/ilae/archive/tools/twas/LDREF/1000G_unfiltered_CHR_BP/1000G_unfiltered_CHR --max_impute=0.7
+done                        
+
+for i in {1..23};
+do
+fusion --sumstats summary_stats/ILAE3.2_CAE_CHR_BPP.sumstats --weights /mnt/ilae/archive/tools/twas/WEIGHTS/PEC_TWAS_weights.pos --weights_dir /mnt/ilae/archive/tools/twas/WEIGHTS/ --chr ${i} --out results/CAE/ILAE3.2_CAE_PEC_CHR${i} --ref_ld_chr /mnt/ilae/archive/tools/twas/LDREF/1000G_unfiltered_CHR_BP/1000G_unfiltered_CHR --max_impute=0.7;
+done               
+
+
+
+### ILAE 3.4
+
+cd /mnt/ilae/work/meta_with_epi25/rsids/results/FUSION
+
+
+#CMC
+for i in {1..22}
+do
+fusion --sumstats summary_stats/ILAE3.4_Caucasian_generalised_rsids.sumstats --weights /mnt/ilae/archive/tools/twas/WEIGHTS/CMC.BRAIN.RNASEQ.pos --weights_dir /mnt/ilae/archive/tools/twas/WEIGHTS/ --chr ${i} --out results/ILAE3.4_Caucasian_generalised/generalised_CMC_CHR${i} --ref_ld_chr /mnt/ilae/archive/tools/twas/LDREF/1000G.EUR.
+done                 
+
+#PSychEncode 
+Created my own LDREF from 1KG, but now unconstrained for HapMap alleles; downloaded from (https://www.cog-genomics.org/plink/2.0/resources#1kg_phase3), filtered for EUR, MAF0.005 and converted to PLINK .bim etc. by chr. 
+for i in {1..23}
+do
+fusion --sumstats summary_stats/CHR_BP/ILAE3.4_Caucasian_generalised_CHR_BP.sumstats --weights /mnt/ilae/archive/tools/twas/WEIGHTS/PEC_TWAS_weights.pos --weights_dir /mnt/ilae/archive/tools/twas/WEIGHTS/ --chr ${i} --out results/ILAE3.4_Caucasian_generalised/generalised_PEC_CHR${i} --ref_ld_chr /mnt/ilae/archive/tools/twas/LDREF/1000G_unfiltered_CHR_BP/1000G_unfiltered_CHR
+done                 
+
+
+
+
+
+
+#reformat sum stats to CHR:BP (for PEC)
+/mnt/ilae/work/meta_with_epi25/rsids/results/FUSION/summary_stats/CHR_BP
+awk '{print $1":"$2, $4, $5, $8, $9, $10}' ../../../ILAE3.5_Caucasian_all_epilepsy_rsids1.tbl > ILAE3.5_Caucasian_all_epilepsy_CHR_BP
+awk '{print $1":"$2, $4, $5, $8, $9, $10}' ../../../ILAE3.5_Caucasian_focal_rsids1.tbl > ILAE3.5_Caucasian_focal_CHR_BP
+awk '{print $1":"$2, $4, $5, $8, $9, $10}' ../../../ILAE3.4_Caucasian_generalised_rsids1.tbl > ILAE3.4_Caucasian_generalised_CHR_BP
+
+
+conda activate ldsc
+munge_sumstats --sumstats ILAE3.5_Caucasian_all_epilepsy_CHR_BP --out ILAE3.5_Caucasian_all_epilepsy_CHR_BP --snp Chromosome:Position
+munge_sumstats --sumstats ILAE3.5_Caucasian_focal_CHR_BP --out ILAE3.5_Caucasian_focal_CHR_BP --snp Chromosome:Position
+munge_sumstats --sumstats ILAE3.4_Caucasian_generalised_CHR_BP --out ILAE3.4_Caucasian_generalised_CHR_BP --snp Chromosome:Position
+
+
+
+#formatting PEC
+https://opain.github.io/MDD-TWAS/MDD_TWAS.html#22_psychencode_snp-weights
+
+
+
+#Run TWAS PEC
+cd /mnt/ilae/work/meta_with_epi25/rsids/results/FUSION
+
+for i in {1..23}
+do
+fusion --sumstats summary_stats/CHR_BP/ILAE3.5_Caucasian_all_epilepsy_CHR_BP.sumstats.gz --weights /mnt/ilae/archive/tools/twas/WEIGHTS/PEC_TWAS_weights.pos --weights_dir /mnt/ilae/archive/tools/twas/WEIGHTS/ --chr ${i} --out results/ILAE3.5_Caucasian_all_epilepsy/all_epilepsy_PEC_CHR${i} --ref_ld_chr /mnt/ilae/archive/tools/twas/LDREF/1000G_unfiltered_CHR_BP/1000G_unfiltered_CHR
+done                 
+
+for i in {1..23}
+do
+fusion --sumstats summary_stats/CHR_BP/ILAE3.5_Caucasian_focal_CHR_BP.sumstats.gz --weights /mnt/ilae/archive/tools/twas/WEIGHTS/PEC_TWAS_weights.pos --weights_dir /mnt/ilae/archive/tools/twas/WEIGHTS/ --chr ${i} --out results/ILAE3.5_Caucasian_focal/focal_epilepsy_PEC_CHR${i} --ref_ld_chr /mnt/ilae/archive/tools/twas/LDREF/1000G_unfiltered_CHR_BP/1000G_unfiltered_CHR
+done                 
+
+for i in {1..23}
+do
+fusion --sumstats summary_stats/CHR_BP/ILAE3.4_Caucasian_generalised_CHR_BP.sumstats.gz --weights /mnt/ilae/archive/tools/twas/WEIGHTS/PEC_TWAS_weights.pos --weights_dir /mnt/ilae/archive/tools/twas/WEIGHTS/ --chr ${i} --out results/ILAE3.4_Caucasian_generalised/generalised_PEC__CHR${i} --ref_ld_chr /mnt/ilae/archive/tools/twas/LDREF/1000G_unfiltered_CHR_BP/1000G_unfiltered_CHR
+done                 
+
+
+##########################################
+##OLD
+##########################################
+#Subphenotypes PSychEncode
+for i in {1..23}
+do
+fusion --sumstats summary_stats/CHR_BP/ILAE3_JME_CHR_BP.sumstats --weights /mnt/ilae/archive/tools/twas/WEIGHTS/PEC_TWAS_weights.pos --weights_dir /mnt/ilae/archive/tools/twas/WEIGHTS/ --chr ${i} --out results/ILAE3_subphenotypes/JME_PEC_CHR${i} --ref_ld_chr /mnt/ilae/archive/tools/twas/LDREF/1000G_unfiltered_CHR_BP/1000G_unfiltered_CHR
+done                 
+
+for i in {1..23}
+do
+fusion --sumstats summary_stats/CHR_BP/ILAE3_JAE_CHR_BP.sumstats --weights /mnt/ilae/archive/tools/twas/WEIGHTS/PEC_TWAS_weights.pos --weights_dir /mnt/ilae/archive/tools/twas/WEIGHTS/ --chr ${i} --out results/ILAE3_subphenotypes/JAE_PEC_CHR${i} --ref_ld_chr /mnt/ilae/archive/tools/twas/LDREF/1000G_unfiltered_CHR_BP/1000G_unfiltered_CHR
+done                 
+
+
+for i in {1..23}
+do
+fusion --sumstats summary_stats/CHR_BP/ILAE3_CAE_CHR_BP.sumstats --weights /mnt/ilae/archive/tools/twas/WEIGHTS/PEC_TWAS_weights.pos --weights_dir /mnt/ilae/archive/tools/twas/WEIGHTS/ --chr ${i} --out results/ILAE3_subphenotypes/CAE_PEC_CHR${i} --ref_ld_chr /mnt/ilae/archive/tools/twas/LDREF/1000G_unfiltered_CHR_BP/1000G_unfiltered_CHR
+done                 
+
+
+for i in {1..23}
+do
+fusion --sumstats summary_stats/CHR_BP/ILAE3_GTCS_CHR_BP.sumstats --weights /mnt/ilae/archive/tools/twas/WEIGHTS/PEC_TWAS_weights.pos --weights_dir /mnt/ilae/archive/tools/twas/WEIGHTS/ --chr ${i} --out results/ILAE3_subphenotypes/GTCS_PEC_CHR${i} --ref_ld_chr /mnt/ilae/archive/tools/twas/LDREF/1000G_unfiltered_CHR_BP/1000G_unfiltered_CHR
+done                 
+
+
+for i in {1..23}
+do
+fusion --sumstats summary_stats/CHR_BP/ILAE3_focal_lesion_negative_CHR_BP.sumstats --weights /mnt/ilae/archive/tools/twas/WEIGHTS/PEC_TWAS_weights.pos --weights_dir /mnt/ilae/archive/tools/twas/WEIGHTS/ --chr ${i} --out results/ILAE3_subphenotypes/focal_lesion_negative_PEC_CHR${i} --ref_ld_chr /mnt/ilae/archive/tools/twas/LDREF/1000G_unfiltered_CHR_BP/1000G_unfiltered_CHR
+done                 
+
+
+
+# Formatting results and creating plots
+# Transfer files to HPC vanaf huis
+# script in /hpc/dlab_koeleman/users/rstevelink/ILAE_PEC/SMR/Format_results.R; based on https://opain.github.io/MDD-TWAS/MDD_TWAS.html
+
+cd /hpc/dlab_koeleman/users/rstevelink/ILAE_PEC/SMR
+

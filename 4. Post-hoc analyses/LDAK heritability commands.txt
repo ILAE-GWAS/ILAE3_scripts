@@ -1,0 +1,69 @@
+#downloaded BLD-LDAK model taggings file from GBR population https://genetics.ghpc.au.dk/doug/bld.ldak.hapmap.gbr.tagging.gz
+
+#formatting summary stats for LDAK
+cd mnt/ilae/work/meta_with_epi25/rsids/results/ldak
+
+#Effective_N
+echo -e "Predictor\tA1\tA2\tn\tZ" > sumstats/ILAE3.7_Caucasian_generalised_LDAK_sumstats_Effective_N
+awk 'NR>1{print $1":"$2, $4, $5, $8, $9}' ../ILAE3.7_Caucasian_generalised1.tbl | tr [:lower:] [:upper:] >> sumstats/ILAE3.7_Caucasian_generalised_LDAK_sumstats_Effective_N
+
+echo -e "Predictor\tA1\tA2\tn\tZ" > sumstats/ILAE3.7_Caucasian_all_epilepsy_LDAK_sumstats_Effective_N
+awk 'NR>1{print $1":"$2, $4, $5, $8, $9}' ../ILAE3.7_Caucasian_all_epilepsy1.tbl | tr [:lower:] [:upper:] >> sumstats/ILAE3.7_Caucasian_all_epilepsy_LDAK_sumstats_Effective_N
+
+echo -e "Predictor\tA1\tA2\tn\tZ" > sumstats/ILAE3.7_Caucasian_focal_LDAK_sumstats_Effective_N
+awk 'NR>1{print $1":"$2, $4, $5, $8, $9}' ../ILAE3.7_Caucasian_focal1.tbl | tr [:lower:] [:upper:] >> sumstats/ILAE3.7_Caucasian_focal_LDAK_sumstats_Effective_N
+
+#subphenotypes
+echo -e "Predictor\tA1\tA2\tn\tZ" > sumstats/ILAE3.2_JME_Effective_N
+awk 'NR>1{print $1":"$2, $4, $5, $8, $9}' ../subphenotypes/ILAE3.2_JME1.tbl | tr [:lower:] [:upper:] >> sumstats/ILAE3.2_JME_Effective_N
+
+echo -e "Predictor\tA1\tA2\tn\tZ" > sumstats/ILAE3.2_JAE_Effective_N
+awk 'NR>1{print $1":"$2, $4, $5, $8, $9}' ../subphenotypes/ILAE3.2_JAE1.tbl | tr [:lower:] [:upper:] >> sumstats/ILAE3.2_JAE_Effective_N
+
+echo -e "Predictor\tA1\tA2\tn\tZ" > sumstats/ILAE3.2_CAE_Effective_N
+awk 'NR>1{print $1":"$2, $4, $5, $8, $9}' ../subphenotypes/ILAE3.2_CAE1.tbl | tr [:lower:] [:upper:] >> sumstats/ILAE3.2_CAE_Effective_N
+
+echo -e "Predictor\tA1\tA2\tn\tZ" > sumstats/ILAE3.2_GTCS_Effective_N
+awk 'NR>1{print $1":"$2, $4, $5, $8, $9}' ../subphenotypes/ILAE3.2_GTCS1.tbl | tr [:lower:] [:upper:] >> sumstats/ILAE3.2_GTCS_Effective_N
+
+echo -e "Predictor\tA1\tA2\tn\tZ" > sumstats/ILAE3.2_focal_HS_Effective_N
+awk 'NR>1{print $1":"$2, $4, $5, $8, $9}' ../subphenotypes/ILAE3.2_focal_HS1.tbl | tr [:lower:] [:upper:] >> sumstats/ILAE3.2_focal_HS_Effective_N
+
+echo -e "Predictor\tA1\tA2\tn\tZ" > sumstats/ILAE3.2_focal_other_lesion_Effective_N
+awk 'NR>1{print $1":"$2, $4, $5, $8, $9}' ../subphenotypes/ILAE3.2_focal_other_lesion1.tbl | tr [:lower:] [:upper:] >> sumstats/ILAE3.2_focal_other_lesion_Effective_N
+
+echo -e "Predictor\tA1\tA2\tn\tZ" > sumstats/ILAE3.2_focal_lesion_negative_Effective_N
+awk 'NR>1{print $1":"$2, $4, $5, $8, $9}' ../subphenotypes/ILAE3.2_focal_lesion_negative1.tbl | tr [:lower:] [:upper:] >> sumstats/ILAE3.2_focal_lesion_negative_Effective_N
+
+
+#RawN; CHANGE NUMBER TO TOTAL N
+echo -e "Predictor\tA1\tA2\tn\tZ" > sumstats/ILAE3.7_Caucasian_generalised_LDAK_sumstats_rawN
+awk 'NR>1{print $1":"$2, $4, $5, 49388, $9}' ../ILAE3.7_Caucasian_generalised1.tbl | tr [:lower:] [:upper:] >> sumstats/ILAE3.7_Caucasian_generalised_LDAK_sumstats_rawN
+
+echo -e "Predictor\tA1\tA2\tn\tZ" > sumstats/ILAE3.2_JAE_rawN
+awk 'NR>1{print $1":"$2, $4, $5, 38001, $9}' ../subphenotypes/ILAE3.2_JAE1.tbl | tr [:lower:] [:upper:] >> sumstats/ILAE3.2_JAE_rawN
+
+
+
+#run LDAK SumHers for effectiveN #CHANGE PREVALENCE
+ldak --prevalence 0.005 --ascertainment 0.5 --summary sumstats/ILAE3.7_Caucasian_all_epilepsy_LDAK_sumstats_Effective_N --sum-hers results/Effective_N/ILAE3.7_Caucasian_all_epilepsy_LDAK --check-sums NO --tagfile taggings/bld.ldak.hapmap.gbr.tagging 
+ldak --prevalence 0.003 --ascertainment 0.5 --summary sumstats/ILAE3.7_Caucasian_focal_LDAK_sumstats_Effective_N --sum-hers results/Effective_N/ILAE3.7_Caucasian_focal_LDAK --check-sums NO --tagfile taggings/bld.ldak.hapmap.gbr.tagging
+ldak --prevalence 0.002 --ascertainment 0.5 --summary sumstats/ILAE3.7_Caucasian_generalised_LDAK_sumstats_Effective_N --sum-hers results/Effective_N/ILAE3.7_Caucasian_generalised_LDAK --check-sums NO --tagfile taggings/bld.ldak.hapmap.gbr.tagging
+
+ldak --prevalence 0.00035 --ascertainment 0.5 --summary sumstats/ILAE3.2_JME_Effective_N --sum-hers results/Effective_N/ILAE3.2_JME_LDAK --check-sums NO --tagfile taggings/bld.ldak.hapmap.gbr.tagging
+ldak --prevalence 0.00015 --ascertainment 0.5 --summary sumstats/ILAE3.2_JAE_Effective_N --sum-hers results/Effective_N/ILAE3.2_JAE_LDAK --check-sums NO --tagfile taggings/bld.ldak.hapmap.gbr.tagging
+ldak --prevalence 0.00015 --ascertainment 0.5 --summary sumstats/ILAE3.2_CAE_Effective_N --sum-hers results/Effective_N/ILAE3.2_CAE_LDAK --check-sums NO --tagfile taggings/bld.ldak.hapmap.gbr.tagging
+ldak --prevalence 0.0002 --ascertainment 0.5 --summary sumstats/ILAE3.2_GTCS_Effective_N --sum-hers results/Effective_N/ILAE3.2_GTCS_LDAK --check-sums NO --tagfile taggings/bld.ldak.hapmap.gbr.tagging
+ldak --prevalence 0.00075 --ascertainment 0.5 --summary sumstats/ILAE3.2_focal_HS_Effective_N --sum-hers results/Effective_N/ILAE3.2_focal_HS_LDAK --check-sums NO --tagfile taggings/bld.ldak.hapmap.gbr.tagging
+ldak --prevalence 0.00135 --ascertainment 0.5 --summary sumstats/ILAE3.2_focal_other_lesion_Effective_N --sum-hers results/Effective_N/ILAE3.2_focal_other_lesion_LDAK --check-sums NO --tagfile taggings/bld.ldak.hapmap.gbr.tagging
+ldak --prevalence 0.0009 --ascertainment 0.5 --summary sumstats/ILAE3.2_focal_lesion_negative_Effective_N --sum-hers results/Effective_N/ILAE3.2_focal_lesion_negative_LDAK --check-sums NO --tagfile taggings/bld.ldak.hapmap.gbr.tagging
+
+
+
+#run LDAK SumHers for rawN #CHANGE PREVALENCE AND ASCERTAINMENT
+ldak --prevalence 0.002 --ascertainment 0.14076 --summary sumstats/ILAE3.7_Caucasian_generalised_LDAK_sumstats --sum-hers results/rawN/ILAE3.7_Caucasian_generalised_LDAK --check-sums NO --tagfile taggings/bld.ldak.hapmap.gbr.tagging 
+
+ldak --prevalence 0.00015 --ascertainment 0.017420594 --summary sumstats/ILAE3.2_JAE_rawN --sum-hers results/rawN/ILAE3.2_JAE_LDAK --check-sums NO --tagfile taggings/bld.ldak.hapmap.gbr.tagging 
+
+
+
